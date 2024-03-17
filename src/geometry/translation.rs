@@ -129,6 +129,24 @@ impl<T: Scalar, const D: usize> Translation<T, D> {
         Translation::from(-&self.vector)
     }
 
+    /// Extract the internal vector of this translation. Equivalent to accessing `self.vector`.
+    ///
+    /// # Example
+    /// ```
+    /// # use nalgebra::{Translation2, Translation3};
+    /// let t = Translation3::new(1.0, 2.0, 3.0);
+    /// assert_eq!(t.into_inner(), t.vector);
+    ///
+    /// // Work in all dimensions.
+    /// let t = Translation2::new(1.0, 2.0);
+    /// assert_eq!(t.into_inner(), t.vector);
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn into_inner(self) -> SVector<T, D> {
+        self.vector
+    }
+
     /// Converts this translation into its equivalent homogeneous transformation matrix.
     ///
     /// # Example

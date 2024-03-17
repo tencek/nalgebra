@@ -11,7 +11,7 @@ use crate::geometry::{
     AbstractRotation, Isometry, Similarity, SuperTCategoryOf, TAffine, Transform, Translation,
     Translation3, UnitDualQuaternion, UnitQuaternion,
 };
-use crate::Point;
+use crate::{OPoint, Point};
 
 /*
  * This file provides the following conversions:
@@ -180,6 +180,32 @@ where
     }
 }
 
+impl<T: Scalar, const D: usize> Translation<T, D> {
+    /// Reference to the vector coordinates of this translation.
+    ///
+    /// This is equivalent to `&translation.vector`.
+    #[inline]
+    pub fn as_vector(&self) -> &SVector<T, D> {
+        &self.vector
+    }
+
+    /// Mutable reference to the vector coordinates of this translation.
+    ///
+    /// This is equivalent to `&mut translation.vector`.
+    #[inline]
+    pub fn as_vector_mut(&mut self) -> &mut SVector<T, D> {
+        &mut self.vector
+    }
+
+    /// Extracts the underlying vector coordinates of this translation.
+    ///
+    /// This is equivalent to `translation.vector`.
+    #[inline]
+    pub fn into_vector(self) -> SVector<T, D> {
+        self.vector
+    }
+}
+
 impl<T: Scalar + Zero + One, const D: usize> From<Translation<T, D>>
     for OMatrix<T, DimNameSum<Const<D>, U1>, DimNameSum<Const<D>, U1>>
 where
@@ -213,6 +239,13 @@ impl<T: Scalar, const D: usize> From<Point<T, D>> for Translation<T, D> {
     #[inline]
     fn from(pt: Point<T, D>) -> Self {
         Translation { vector: pt.coords }
+    }
+}
+
+impl<T: Scalar, const D: usize> From<Translation<T, D>> for Point<T, D> {
+    #[inline]
+    fn from(tra: Translation<T, D>) -> Self {
+        Point::from(tra.vector)
     }
 }
 
