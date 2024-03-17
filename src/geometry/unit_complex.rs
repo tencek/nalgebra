@@ -89,6 +89,40 @@ where
         self.im.clone().simd_atan2(self.re.clone())
     }
 
+    /// The imaginary part of the underlying complex number.
+    ///
+    /// It can also be accessed directly with `unit_complex.im`.
+    /// # Example
+    /// ```
+    /// # use nalgebra::UnitComplex;
+    /// let angle = 1.78f32;
+    /// let rot = UnitComplex::new(angle);
+    /// assert_eq!(rot.imag(), angle.sin());
+    /// assert_eq!(rot.im, angle.sin());
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn imag(&self) -> T {
+        self.im.clone()
+    }
+
+    /// The real part of the underlying complex number.
+    ///
+    /// It can also be accessed directly with `unit_complex.re`.
+    /// # Example
+    /// ```
+    /// # use nalgebra::UnitComplex;
+    /// let angle = 1.78f32;
+    /// let rot = UnitComplex::new(angle);
+    /// assert_eq!(rot.real(), angle.cos());
+    /// assert_eq!(rot.re, angle.cos());
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn real(&self) -> T {
+        self.re.clone()
+    }
+
     /// The sine of the rotation angle.
     ///
     /// # Example
