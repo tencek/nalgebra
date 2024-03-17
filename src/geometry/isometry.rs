@@ -1,4 +1,5 @@
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
+use std::borrow::Borrow;
 use std::fmt;
 use std::hash;
 
@@ -303,8 +304,8 @@ where
     /// ```
     #[inline]
     #[must_use]
-    pub fn transform_point(&self, pt: &Point<T, D>) -> Point<T, D> {
-        self * pt
+    pub fn transform_point(&self, pt: impl Borrow<Point<T, D>>) -> Point<T, D> {
+        self * pt.borrow()
     }
 
     /// Transform the given vector by this isometry, ignoring the translation
@@ -327,8 +328,8 @@ where
     /// ```
     #[inline]
     #[must_use]
-    pub fn transform_vector(&self, v: &SVector<T, D>) -> SVector<T, D> {
-        self * v
+    pub fn transform_vector(&self, v: impl Borrow<SVector<T, D>>) -> SVector<T, D> {
+        self * v.borrow()
     }
 
     /// Transform the given point by the inverse of this isometry. This may be
@@ -350,9 +351,9 @@ where
     /// ```
     #[inline]
     #[must_use]
-    pub fn inverse_transform_point(&self, pt: &Point<T, D>) -> Point<T, D> {
+    pub fn inverse_transform_point(&self, pt: impl Borrow<Point<T, D>>) -> Point<T, D> {
         self.rotation
-            .inverse_transform_point(&(pt - &self.translation.vector))
+            .inverse_transform_point(&(pt.borrow() - &self.translation.vector))
     }
 
     /// Transform the given vector by the inverse of this isometry, ignoring the
@@ -375,8 +376,8 @@ where
     /// ```
     #[inline]
     #[must_use]
-    pub fn inverse_transform_vector(&self, v: &SVector<T, D>) -> SVector<T, D> {
-        self.rotation.inverse_transform_vector(v)
+    pub fn inverse_transform_vector(&self, v: impl Borrow<SVector<T, D>>) -> SVector<T, D> {
+        self.rotation.inverse_transform_vector(v.borrow())
     }
 
     /// Transform the given unit vector by the inverse of this isometry, ignoring the

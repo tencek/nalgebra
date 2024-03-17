@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 use num::Zero;
 use std::fmt;
@@ -302,12 +303,13 @@ where
     /// # use nalgebra::Quaternion;
     /// let q1 = Quaternion::new(1.0, 2.0, 3.0, 4.0);
     /// let q2 = Quaternion::new(5.0, 6.0, 7.0, 8.0);
-    /// assert_eq!(q1.dot(&q2), 70.0);
+    /// assert_eq!(q1.dot(&q2), 70.0); // Argument can be passed by-ref
+    /// assert_eq!(q1.dot(q2), 70.0);  // ... or by-value.
     /// ```
     #[inline]
     #[must_use]
-    pub fn dot(&self, rhs: &Self) -> T {
-        self.coords.dot(&rhs.coords)
+    pub fn dot(&self, rhs: impl Borrow<Self>) -> T {
+        self.coords.dot(&rhs.borrow().coords)
     }
 }
 

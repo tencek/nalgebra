@@ -4,6 +4,7 @@ use crate::base::dimension::U4;
 use crate::base::storage::Owned;
 #[cfg(feature = "arbitrary")]
 use quickcheck::{Arbitrary, Gen};
+use std::borrow::Borrow;
 
 #[cfg(feature = "rand-no-std")]
 use rand::{
@@ -262,10 +263,11 @@ where
     /// assert_eq!(UnitQuaternion::from_scaled_axis(Vector3::<f32>::zeros()), UnitQuaternion::identity());
     /// ```
     #[inline]
-    pub fn from_axis_angle<SB>(axis: &Unit<Vector<T, U3, SB>>, angle: T) -> Self
+    pub fn from_axis_angle<SB>(axis: impl Borrow<Unit<Vector<T, U3, SB>>>, angle: T) -> Self
     where
         SB: Storage<T, U3>,
     {
+        let axis = axis.borrow();
         let (sang, cang) = (angle / crate::convert(2.0f64)).simd_sin_cos();
 
         let q = Quaternion::from_parts(cang, axis.as_ref() * sang);

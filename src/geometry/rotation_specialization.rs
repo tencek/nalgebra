@@ -2,6 +2,7 @@
 use crate::base::storage::Owned;
 #[cfg(feature = "arbitrary")]
 use quickcheck::{Arbitrary, Gen};
+use std::borrow::Borrow;
 
 use num::Zero;
 
@@ -382,10 +383,11 @@ where
     /// // A zero vector yields an identity.
     /// assert_eq!(Rotation3::from_scaled_axis(Vector3::<f32>::zeros()), Rotation3::identity());
     /// ```
-    pub fn from_axis_angle<SB>(axis: &Unit<Vector<T, U3, SB>>, angle: T) -> Self
+    pub fn from_axis_angle<SB>(axis: impl Borrow<Unit<Vector<T, U3, SB>>>, angle: T) -> Self
     where
         SB: Storage<T, U3>,
     {
+        let axis = axis.borrow();
         angle.clone().simd_ne(T::zero()).if_else(
             || {
                 let ux = axis.as_ref()[0].clone();
