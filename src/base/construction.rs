@@ -1,5 +1,6 @@
 #[cfg(all(feature = "alloc", not(feature = "std")))]
 use alloc::vec::Vec;
+use std::borrow::Borrow;
 
 #[cfg(feature = "arbitrary")]
 use crate::base::storage::Owned;
@@ -359,10 +360,11 @@ where
     ///         dm[(2, 0)] == 0.0 && dm[(2, 1)] == 0.0 && dm[(2, 2)] == 3.0);
     /// ```
     #[inline]
-    pub fn from_diagonal<SB: RawStorage<T, D>>(diag: &Vector<T, D, SB>) -> Self
+    pub fn from_diagonal<SB: RawStorage<T, D>>(diag: impl Borrow<Vector<T, D, SB>>) -> Self
     where
         T: Zero,
     {
+        let diag = diag.borrow();
         let (dim, _) = diag.shape_generic();
         let mut res = Self::zeros_generic(dim, dim);
 
