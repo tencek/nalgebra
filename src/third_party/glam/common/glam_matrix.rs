@@ -1,6 +1,6 @@
 use super::glam::{
     BVec2, BVec3, BVec4, DMat2, DMat3, DMat4, DVec2, DVec3, DVec4, IVec2, IVec3, IVec4, Mat2, Mat3,
-    Mat4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
+    Mat3A, Mat4, UVec2, UVec3, UVec4, Vec2, Vec3, Vec3A, Vec4,
 };
 use crate::storage::RawStorage;
 use crate::{
@@ -196,6 +196,27 @@ where
             Vec3::new(e[(0, 0)], e[(1, 0)], e[(2, 0)]),
             Vec3::new(e[(0, 1)], e[(1, 1)], e[(2, 1)]),
             Vec3::new(e[(0, 2)], e[(1, 2)], e[(2, 2)]),
+        )
+    }
+}
+
+impl From<Mat3A> for Matrix3<f32> {
+    #[inline]
+    fn from(e: Mat3A) -> Matrix3<f32> {
+        e.to_cols_array_2d().into()
+    }
+}
+
+impl<S> From<Matrix<f32, U3, U3, S>> for Mat3A
+where
+    S: RawStorage<f32, U3, U3>,
+{
+    #[inline]
+    fn from(e: Matrix<f32, U3, U3, S>) -> Mat3A {
+        Mat3A::from_cols(
+            Vec3A::new(e[(0, 0)], e[(1, 0)], e[(2, 0)]),
+            Vec3A::new(e[(0, 1)], e[(1, 1)], e[(2, 1)]),
+            Vec3A::new(e[(0, 2)], e[(1, 2)], e[(2, 2)]),
         )
     }
 }
