@@ -100,6 +100,35 @@ impl<T: Scalar, const D: usize> From<Point<T, D>> for [T; D] {
     }
 }
 
+impl<T: Scalar, D: DimName> OPoint<T, D>
+where
+    DefaultAllocator: Allocator<T, D>,
+{
+    /// Reference to the vector coordinates of this point.
+    ///
+    /// This is equivalent to `&point.coords`.
+    #[inline]
+    pub fn as_vector(&self) -> &OVector<T, D> {
+        &self.coords
+    }
+
+    /// Mutable reference to the vector coordinates of this point.
+    ///
+    /// This is equivalent to `&mut point.coords`.
+    #[inline]
+    pub fn as_vector_mut(&mut self) -> &mut OVector<T, D> {
+        &mut self.coords
+    }
+
+    /// Extracts the underlying vector coordinates of this point.
+    ///
+    /// This is equivalent to `point.coords`.
+    #[inline]
+    pub fn into_vector(self) -> OVector<T, D> {
+        self.coords
+    }
+}
+
 impl<T: Scalar, D: DimName> From<OVector<T, D>> for OPoint<T, D>
 where
     DefaultAllocator: Allocator<T, D>,
