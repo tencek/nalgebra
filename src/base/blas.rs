@@ -1,4 +1,5 @@
 use crate::{RawStorage, SimdComplexField};
+use core::borrow::Borrow;
 use num::{One, Zero};
 use simba::scalar::{ClosedAdd, ClosedMul};
 
@@ -181,21 +182,24 @@ where
     /// let vec1 = Vector3::new(1.0, 2.0, 3.0);
     /// let vec2 = Vector3::new(0.1, 0.2, 0.3);
     /// assert_eq!(vec1.dot(&vec2), 1.4);
+    /// assert_eq!(vec1.dot(&vec2), 1.4); // The argument can also be passed by-value.
     ///
     /// let mat1 = Matrix2x3::new(1.0, 2.0, 3.0,
     ///                           4.0, 5.0, 6.0);
     /// let mat2 = Matrix2x3::new(0.1, 0.2, 0.3,
     ///                           0.4, 0.5, 0.6);
     /// assert_eq!(mat1.dot(&mat2), 9.1);
+    /// assert_eq!(mat1.dot(mat2), 9.1); // The argument can also be passed by-value.
     /// ```
     ///
     #[inline]
     #[must_use]
-    pub fn dot<R2: Dim, C2: Dim, SB>(&self, rhs: &Matrix<T, R2, C2, SB>) -> T
+    pub fn dot<R2: Dim, C2: Dim, SB>(&self, rhs: impl Borrow<Matrix<T, R2, C2, SB>>) -> T
     where
         SB: RawStorage<T, R2, C2>,
         ShapeConstraint: DimEq<R, R2> + DimEq<C, C2>,
     {
+        let rhs = rhs.borrow();
         self.dotx(rhs, |e| e)
     }
 
