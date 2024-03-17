@@ -23,7 +23,7 @@ use crate::base::{
 use crate::base::{DVector, RowDVector, VecStorage};
 use crate::base::{ViewStorage, ViewStorageMut};
 use crate::constraint::DimEq;
-use crate::{IsNotStaticOne, RowSVector, SMatrix, SVector, VectorView, VectorViewMut};
+use crate::{IsNotStaticOne, RowSVector, SMatrix, SVector, Storage, VectorView, VectorViewMut};
 use std::mem::MaybeUninit;
 
 // TODO: too bad this won't work for slice conversions.
@@ -311,6 +311,30 @@ impl_from_into_asref_borrow_2D!(
     (U5, U2) => (5, 2); (U5, U3) => (5, 3); (U5, U4) => (5, 4); (U5, U5) => (5, 5); (U5, U6) => (5, 6);
     (U6, U2) => (6, 2); (U6, U3) => (6, 3); (U6, U4) => (6, 4); (U6, U5) => (6, 5); (U6, U6) => (6, 6);
 );
+
+/// Macro for implementing From<Scalar> for 1D vectors and vice-versa.
+/// Note that we are forced to implement only for concrete types to avoid
+/// unrelated conflicting implementation (because it would look like a
+/// blanket impl).
+macro_rules! impl_1D_from_into(
+    ($($scalar: ty),*) => {$(
+        impl From<$scalar> for crate::Vector1<$scalar> {
+            #[inline]
+            fn from(value: $scalar) -> Self {
+                crate::Vector1::new(value)
+            }
+        }
+
+        impl<S: Storage<$scalar, U1, U1>> From<crate::Vector<$scalar, U1, S>> for $scalar {
+            #[inline]
+            fn from(value: crate::Vector<$scalar, U1, S>) -> Self {
+                value[0]
+            }
+        }
+    )*}
+);
+
+impl_1D_from_into!(f32, f64, usize, u32, u64, u8, bool);
 
 impl<'a, T, RStride, CStride, const R: usize, const C: usize>
     From<MatrixView<'a, T, Const<R>, Const<C>, RStride, CStride>>
