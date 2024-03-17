@@ -2,6 +2,7 @@ use num::{One, Zero};
 
 use approx::{AbsDiffEq, RelativeEq, UlpsEq};
 use std::any::TypeId;
+use std::borrow::Borrow;
 use std::cmp::Ordering;
 use std::fmt;
 use std::hash::{Hash, Hasher};
@@ -2047,7 +2048,10 @@ impl<T: Scalar + ClosedAdd + ClosedSub + ClosedMul, R: Dim, C: Dim, S: RawStorag
     /// dynamically-sized matrices and statically-sized 3D matrices.
     #[inline]
     #[must_use]
-    pub fn cross<R2, C2, SB>(&self, b: &Matrix<T, R2, C2, SB>) -> MatrixCross<T, R, C, R2, C2>
+    pub fn cross<R2, C2, SB>(
+        &self,
+        b: impl Borrow<Matrix<T, R2, C2, SB>>,
+    ) -> MatrixCross<T, R, C, R2, C2>
     where
         R2: Dim,
         C2: Dim,
@@ -2055,6 +2059,7 @@ impl<T: Scalar + ClosedAdd + ClosedSub + ClosedMul, R: Dim, C: Dim, S: RawStorag
         DefaultAllocator: SameShapeAllocator<T, R, C, R2, C2>,
         ShapeConstraint: SameNumberOfRows<R, R2> + SameNumberOfColumns<C, C2>,
     {
+        let b = b.borrow();
         let shape = self.shape();
         assert_eq!(shape, b.shape(), "Vector cross product dimension mismatch.");
         assert!(
