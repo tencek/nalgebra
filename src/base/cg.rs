@@ -6,6 +6,7 @@
  */
 
 use num::{One, Zero};
+use std::borrow::Borrow;
 
 use crate::base::allocator::Allocator;
 use crate::base::dimension::{DimName, DimNameDiff, DimNameSub, U1};
@@ -161,7 +162,7 @@ impl<T: RealField> Matrix4<T> {
     }
 
     /// Builds a 3D homogeneous rotation matrix from an axis and a rotation angle.
-    pub fn from_axis_angle(axis: &Unit<Vector3<T>>, angle: T) -> Self {
+    pub fn from_axis_angle(axis: impl Borrow<Unit<Vector3<T>>>, angle: T) -> Self {
         Rotation3::from_axis_angle(axis, angle).to_homogeneous()
     }
 
