@@ -1,3 +1,4 @@
+use core::borrow::Borrow;
 use std::fmt;
 use std::ops::Deref;
 
@@ -81,6 +82,32 @@ where
     #[inline]
     fn eq(&self, rhs: &Self) -> bool {
         self.value.eq(&rhs.value)
+    }
+}
+
+impl<T, R, C, S> Borrow<Matrix<T, R, C, S>> for Unit<Matrix<T, R, C, S>>
+where
+    T: Scalar,
+    R: Dim,
+    C: Dim,
+    S: RawStorage<T, R, C>,
+{
+    #[inline]
+    fn borrow(&self) -> &Matrix<T, R, C, S> {
+        &self.value
+    }
+}
+
+impl<'a, T, R, C, S> Borrow<Matrix<T, R, C, S>> for &'a Unit<Matrix<T, R, C, S>>
+where
+    T: Scalar,
+    R: Dim,
+    C: Dim,
+    S: RawStorage<T, R, C>,
+{
+    #[inline]
+    fn borrow(&self) -> &Matrix<T, R, C, S> {
+        &self.value
     }
 }
 
