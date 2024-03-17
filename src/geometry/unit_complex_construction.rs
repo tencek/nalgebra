@@ -197,14 +197,25 @@ where
 
     /// Builds a rotation from a basis assumed to be orthonormal.
     ///
-    /// In order to get a valid unit-quaternion, the input must be an
-    /// orthonormal basis, i.e., all vectors are normalized, and the are
+    /// In order to get a valid unit-complex rotation, the input must be an
+    /// orthonormal basis, i.e., all vectors are normalized, and they are
     /// all orthogonal to each other. These invariants are not checked
     /// by this method.
     pub fn from_basis_unchecked(basis: &[Vector2<T>; 2]) -> Self {
         let mat = Matrix2::from_columns(&basis[..]);
         let rot = Rotation2::from_matrix_unchecked(mat);
         Self::from_rotation_matrix(&rot)
+    }
+
+    /// Builds an unit complex from a 2x2 matrix `m` assumed to represent a rotation.
+    ///
+    /// In order to obtain a valid result, `m` must represent a valid 2D rotation matrix
+    /// (anti-symmetric, unit determinant). That property is not checked.
+    pub fn from_matrix_unchecked(m: Matrix2<T>) -> Self
+    where
+        T: RealField,
+    {
+        Self::from_rotation_matrix(&Rotation2::from_matrix_unchecked(m))
     }
 
     /// Builds an unit complex by extracting the rotation part of the given transformation `m`.
